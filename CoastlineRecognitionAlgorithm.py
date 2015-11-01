@@ -16,7 +16,7 @@ parser.add_option("-q", "--quiet",
 (options, args) = parser.parse_args()
 
 # Read Image
-originalImg = cv2.imread(options.image, 1)
+originalImg = cv2.imread(options.image)
 
 ## Color Filter
 # Min/Max For Color Filter
@@ -37,11 +37,13 @@ gaussianBlurColorFilterImg = cv2.GaussianBlur(colorFilterImg,(5,5),0)
          
 ## Canny Edge Detector With Color Filter
 cannyEdgeColorFilterImg = feature.canny(colorFilterImg)
+cannyEdgeColorFilterImg2 = feature.canny(colorFilterImg, 2) # set sigma to 2
 
 ## Canny Edge Detector With Gaussian Blur And Color Filter
 #arrayGaussianBlurColorFilterImg = np.array(gaussianBlurColorFilterImg,0)
 arrayGaussianBlurColorFilterImg = np.asarray(gaussianBlurColorFilterImg)
 cannyEdgeGaussianBlurColorFilterImg = feature.canny(arrayGaussianBlurColorFilterImg)
+cannyEdgeGaussianBlurColorFilterImg2 = feature.canny(arrayGaussianBlurColorFilterImg, 2)
 
 ## Bilateral Filter
 bilateralFilterImg = cv2.bilateralFilter(originalImg,9,75,75)
@@ -51,9 +53,12 @@ bilateralFilterColorFilterImg = cv2.bilateralFilter(colorFilterImg,9,75,75)
 
 ## Canny Edge With Bilateral And Color Filter
 cannyEdgeBilateralFilterColorFilterImg = feature.canny(bilateralFilterColorFilterImg)
+cannyEdgeGaussianBlurColorFilterImg2 = feature.canny(arrayGaussianBlurColorFilterImg, 2)
 ## Display results
 fig, (img0, img1, img2, img6) = plt.subplots(nrows=1, ncols=4, figsize=(8, 3))
-fig, (img3, img4, img5, img7) = plt.subplots(nrows=1, ncols=4, figsize=(8, 3))
+fig, (img3, img8) = plt.subplots(nrows=1, ncols=2, figsize=(8, 3))
+fig, (img4, img5, img7) = plt.subplots(nrows=1, ncols=3, figsize=(8, 3))
+fig, (img9, img10) = plt.subplots(nrows=1, ncols=2, figsize=(8, 3))
 
 img0.imshow(originalImg, cmap=plt.cm.gray)
 img0.axis('off')
@@ -85,8 +90,19 @@ img6.set_title('Bilateral Filter' ,fontsize=20)
 
 img7.imshow(cannyEdgeBilateralFilterColorFilterImg, cmap=plt.cm.gray)
 img7.axis('off')
-img7.set_title('Canny Edge + Bilateral Filter + Color Filter' ,fontsize=20)
+img7.set_title('Canny Edge + Bilateral Filter + Color Filter' ,fontsize=20)\
 
+img8.imshow(bilateralFilterColorFilterImg, cmap=plt.cm.gray)
+img8.axis('off')
+img8.set_title('Bilateral Filter + Color Filter' ,fontsize=20)
+
+img9.imshow(cannyEdgeGaussianBlurColorFilterImg2, cmap=plt.cm.gray)
+img9.axis('off')
+img9.set_title('Canny Edge + Bilateral Filter + Color Filter, $\sigma=2$',fontsize=20)
+
+img10.imshow(cannyEdgeGaussianBlurColorFilterImg2, cmap=plt.cm.gray)
+img10.axis('off')
+img10.set_title('Canny Edge + Bilateral Filter + Color Filter, $\sigma=2$' ,fontsize=20)
 fig.subplots_adjust(wspace=0.02, hspace=0.02, top=0.9,
                     bottom=0.02, left=0.02, right=0.98)
 
